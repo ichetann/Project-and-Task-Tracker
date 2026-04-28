@@ -8,6 +8,9 @@ const router = express.Router();
 // ============================================
 // HELPER FUNCTION: Check if user can modify task
 // ============================================
+// ============================================
+// HELPER FUNCTION: Check if user can modify task
+// ============================================
 const canUserModifyTask = async (task, userId) => {
   // Get the project
   const project = await Project.findById(task.project);
@@ -18,19 +21,21 @@ const canUserModifyTask = async (task, userId) => {
 
   // User can modify if:
   // 1. User is project owner OR
-  // 2. User is assigned to this task
+  // 2. User created this task OR  // ✅ ADDED THIS
+  // 3. User is assigned to this task
   const isProjectOwner = project.owner.toString() === userId;
+  const isTaskCreator = task.createdBy.toString() === userId;  // ✅ ADDED
   const isAssignedToTask = task.assignedTo && task.assignedTo.some(
     assigneeId => assigneeId.toString() === userId
   );
 
-  if (isProjectOwner || isAssignedToTask) {
+  if (isProjectOwner || isTaskCreator || isAssignedToTask) {  // ✅ UPDATED
     return { allowed: true, project };
   }
 
   return { 
     allowed: false, 
-    reason: 'Only project owner or assigned members can modify this task' 
+    reason: 'Only project owner, task creator, or assigned members can modify this task'  // ✅ UPDATED
   };
 };
 

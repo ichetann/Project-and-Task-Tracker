@@ -29,7 +29,7 @@ const TaskCard = ({ task, onUpdate }) => {
   const isCreator = task.createdBy?._id === user.id;
 
   // User can modify if: project owner OR assigned to task
-  const canModify = isProjectOwner || isAssignedToMe;
+  const canModify = isProjectOwner || isAssignedToMe || isCreator;
   
   // User can delete if: project owner OR task creator
   const canDelete = isProjectOwner || isCreator;
